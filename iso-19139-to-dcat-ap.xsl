@@ -84,6 +84,7 @@
     xmlns:xlink  = "http://www.w3.org/1999/xlink"
     xmlns:xsi    = "http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsl    = "http://www.w3.org/1999/XSL/Transform"
+    xmlns:udata  = "https://github.com/opendatateam/udata"
     exclude-result-prefixes="earl gco gmd gml gmx i i-gp srv xlink xsi xsl wdrs"
     version="1.0">
 
@@ -1370,11 +1371,15 @@
                 </xsl:call-template>
               </xsl:variable>
               <xsl:choose>
-                <xsl:when test="$points-to-service = 'yes' or $function = 'download' or $function = 'offlineAccess' or $function = 'order'">
+                <xsl:when test="$points-to-service = 'yes' or not($function) or $function = 'download' or $function = 'offlineAccess' or $function = 'order'">
                   <dcat:distribution>
                     <dcat:Distribution>
 <!-- Title and description -->
                       <xsl:copy-of select="$TitleAndDescription"/>
+<!-- Forward function to warn user of not($function) -->
+                      <udata:function>
+                        <xsl:value-of select="$function"/>
+                      </udata:function>
 <!-- Access URL -->
 <!--
                       <xsl:for-each select="gmd:linkage/gmd:URL">
@@ -2633,7 +2638,14 @@
 
   <xsl:template name="Dates" match="gmd:date/gmd:CI_Date">
     <xsl:param name="date">
-      <xsl:value-of select="normalize-space(gmd:date/gco:Date)"/>
+      <xsl:choose>
+        <xsl:when test="gmd:date/gco:Date">
+          <xsl:value-of select="normalize-space(gmd:date/gco:Date)"/>
+        </xsl:when>
+        <xsl:when test="gmd:date/gco:DateTime">
+          <xsl:value-of select="normalize-space(gmd:date/gco:DateTime)"/>
+        </xsl:when>
+      </xsl:choose>
     </xsl:param>
     <xsl:param name="type">
       <xsl:value-of select="gmd:dateType/gmd:CI_DateTypeCode/@codeListValue"/>
