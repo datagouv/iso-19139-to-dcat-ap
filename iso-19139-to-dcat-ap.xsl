@@ -462,7 +462,7 @@
       </xsl:when>
       <!-- Fallback to normalize-space of all child elements (backward compatibility) -->
       <xsl:otherwise>
-        <xsl:value-of select="normalize-space($element/*)"/>
+        <xsl:value-of select="normalize-space(string-join($element/*, ''))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -940,7 +940,7 @@
             <dct:title xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:title>
 -->
             <dct:title xml:lang="{$MetadataLanguage}">
-              <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+              <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
             </dct:title>
             <xsl:call-template name="LocalisedString">
               <xsl:with-param name="term">dct:title</xsl:with-param>
@@ -1136,7 +1136,7 @@
       <xsl:variable name="MetadataStandardName">
         <xsl:for-each select="gmd:metadataStandardName">
           <dct:title xml:lang="{$MetadataLanguage}">
-            <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+            <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
           </dct:title>
           <xsl:call-template name="LocalisedString">
             <xsl:with-param name="term">dct:title</xsl:with-param>
@@ -1748,16 +1748,16 @@
     </xsl:param>
 
     <xsl:param name="IndividualURI">
-      <xsl:value-of select="normalize-space(gmd:individualName/*/@xlink:href)"/>
+      <xsl:value-of select="normalize-space(gmd:individualName/gmx:Anchor/@xlink:href)"/>
     </xsl:param>
 
     <xsl:param name="IndividualName">
-      <xsl:value-of select="normalize-space(gmd:individualName/*)"/>
+      <xsl:value-of select="normalize-space(gmd:individualName/(gco:CharacterString, gmx:Anchor)[1])"/>
     </xsl:param>
 
     <xsl:param name="IndividualName-FOAF">
       <xsl:for-each select="gmd:individualName">
-        <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></foaf:name>
+        <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/></foaf:name>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">foaf:name</xsl:with-param>
         </xsl:call-template>
@@ -1766,7 +1766,7 @@
 
     <xsl:param name="IndividualName-vCard">
       <xsl:for-each select="gmd:individualName">
-        <vcard:fn xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></vcard:fn>
+        <vcard:fn xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/></vcard:fn>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">vcard:fn</xsl:with-param>
         </xsl:call-template>
@@ -1774,7 +1774,7 @@
     </xsl:param>
 
     <xsl:param name="OrganisationURI">
-      <xsl:value-of select="normalize-space(gmd:organisationName/*/@xlink:href)"/>
+      <xsl:value-of select="normalize-space(gmd:organisationName/gmx:Anchor/@xlink:href)"/>
     </xsl:param>
 
     <xsl:param name="URI">
@@ -1789,11 +1789,11 @@
     </xsl:param>
 
     <xsl:param name="OrganisationName">
-      <xsl:value-of select="string-join(gmd:organisationName/*[self::gco:CharacterString|gmx:Anchor], '')"/>
+      <xsl:value-of select="normalize-space(gmd:organisationName/(gco:CharacterString, gmx:Anchor)[1])"/>
     </xsl:param>
     <xsl:param name="OrganisationName-FOAF">
       <xsl:for-each select="gmd:organisationName">
-        <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></foaf:name>
+        <foaf:name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/></foaf:name>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">foaf:name</xsl:with-param>
         </xsl:call-template>
@@ -1802,7 +1802,7 @@
 
     <xsl:param name="OrganisationName-vCard">
       <xsl:for-each select="gmd:organisationName">
-        <vcard:organization-name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></vcard:organization-name>
+        <vcard:organization-name xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/></vcard:organization-name>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">vcard:organization-name</xsl:with-param>
         </xsl:call-template>
@@ -1811,7 +1811,7 @@
 
     <xsl:param name="OrganisationNameAsIndividualName-vCard">
       <xsl:for-each select="gmd:organisationName">
-        <vcard:fn xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(*[self::gco:CharacterString|gmx:Anchor])"/></vcard:fn>
+        <vcard:fn xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/></vcard:fn>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">vcard:fn</xsl:with-param>
         </xsl:call-template>
@@ -2403,7 +2403,7 @@
         <dct:title xml:lang="{$MetadataLanguage}"><xsl:value-of select="normalize-space(gco:CharacterString)"/></dct:title>
 -->
         <dct:title xml:lang="{$MetadataLanguage}">
-          <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+          <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
         </dct:title>
         <xsl:call-template name="LocalisedString">
           <xsl:with-param name="term">dct:title</xsl:with-param>
@@ -3088,7 +3088,7 @@
       <xsl:for-each select="gmd:thesaurusName/gmd:CI_Citation">
         <xsl:for-each select="gmd:title">
           <dct:title xml:lang="{$MetadataLanguage}">
-            <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+            <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
           </dct:title>
           <xsl:call-template name="LocalisedString">
             <xsl:with-param name="term">dct:title</xsl:with-param>
@@ -3126,7 +3126,6 @@
       </xsl:choose>
     </xsl:param>
     <xsl:for-each select="gmd:keyword[normalize-space(gco:CharacterString) != '' or normalize-space(gmx:Anchor/@xlink:href) != '']">
-      <xsl:variable name="lckw" select="translate(*[self::gco:CharacterString|self::gmx:Anchor],$uppercase,$lowercase)"/>
       <xsl:choose>
         <xsl:when test="normalize-space($OriginatingControlledVocabulary) = '' and not( gmx:Anchor/@xlink:href and ( starts-with(gmx:Anchor/@xlink:href, 'http://') or starts-with(gmx:Anchor/@xlink:href, 'https://') ) )">
           <xsl:choose>
@@ -3134,7 +3133,7 @@
 <!-- Mapping moved to core profile for compliance with DCAT-AP 2 -->
 <!-- Mapping added for compliance with DCAT-AP 2 -->
               <dcat:keyword xml:lang="{$MetadataLanguage}">
-                <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+                <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
               </dcat:keyword>
               <xsl:call-template name="LocalisedString">
                 <xsl:with-param name="term">dcat:keyword</xsl:with-param>
@@ -3143,7 +3142,7 @@
 <!-- DEPRECATED: Mapping kept for backward compatibility with GeoDCAT-AP v1.* -->
                 <xsl:if test="$include-deprecated = 'yes'">
                   <dc:subject xml:lang="{$MetadataLanguage}">
-                    <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+                    <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
                   </dc:subject>
                   <xsl:call-template name="LocalisedString">
                     <xsl:with-param name="term">dc:subject</xsl:with-param>
@@ -3153,7 +3152,7 @@
             </xsl:when>
             <xsl:otherwise>
               <dcat:keyword xml:lang="{$MetadataLanguage}">
-                <xsl:value-of select="normalize-space(*[self::gco:CharacterString|self::gmx:Anchor])"/>
+                <xsl:value-of select="normalize-space((gco:CharacterString, gmx:Anchor)[1])"/>
               </dcat:keyword>
               <xsl:call-template name="LocalisedString">
                 <xsl:with-param name="term">dcat:keyword</xsl:with-param>
